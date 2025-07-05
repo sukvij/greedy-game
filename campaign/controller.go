@@ -22,11 +22,16 @@ func CampaignServiceController(app *gin.Engine, db *gorm.DB) {
 func (campaignController *CampaignController) getAllCampaign(ctx *gin.Context) {
 	campaignService := NewCampaignService(campaignController.Db, campaignController.Campaign)
 	res, err := campaignService.GetAllCampaign()
-	fmt.Println("err bro ", err)
+	if err != nil {
+		ctx.JSON(500, err)
+		return
+	}
 	ctx.JSON(200, res)
 }
 
 func (campaignController *CampaignController) createCampaign(ctx *gin.Context) {
+	ctx.BindJSON(campaignController.Campaign)
+	fmt.Println(*(campaignController.Campaign), campaignController.Campaign)
 	campaignService := NewCampaignService(campaignController.Db, campaignController.Campaign)
 	res, err := campaignService.CreateCampaign()
 	fmt.Println("create cmpaign err bro ", err)

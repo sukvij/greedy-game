@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -12,13 +12,15 @@ func Connection() (*gorm.DB, error) {
 	var db *gorm.DB
 	var err error
 
-	dsn := "root:root@tcp(localhost:3306)/rojgaarkaro?charset=utf8mb4&parseTime=True&loc=Local"
+	// dsn := "root:root@tcp(localhost:3306)/rojgaarkaro?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "host=localhost user=postgres password=_ dbname=greedy-game port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 
 	const maxRetries = 10
 	const retryDelay = 1 * time.Second
 
 	for i := 0; i < maxRetries; i++ {
-		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		// db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {
 			log.Printf("database connection failed due to connection creationg using gorm.Open() %v times and error is %v\n", i, err)
 			time.Sleep(retryDelay)
