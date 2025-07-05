@@ -1,0 +1,15 @@
+{
+  "exclude_os": null,
+  "include_os": [
+    "Android"
+  ],
+  "exclude_app": null,
+  "include_app": [
+    "com.duolingo.ludokinggame"
+  ],
+  "exclude_country": null,
+  "include_country": [
+    "US",
+    "Canada"
+  ]
+}
