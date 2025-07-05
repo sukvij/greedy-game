@@ -11,13 +11,14 @@ type TargetingRuleController struct {
 }
 
 func TargetingRuleServiceController(app *gin.Engine, db *gorm.DB) {
-	targetingRuleController := &TargetingRuleController{Db: db, TargetingRule: &TargetingRule{}}
+	targetingRuleController := &TargetingRuleController{Db: db}
 	router := app.Group("/targeting-rule")
 	router.GET("", targetingRuleController.getAllTargetingRule)
 	router.POST("", targetingRuleController.creatingTargetingRule)
 }
 
 func (controller *TargetingRuleController) getAllTargetingRule(ctx *gin.Context) {
+	controller.TargetingRule = &TargetingRule{}
 	targetingRuleService := NewTargetingRuleService(controller.Db, controller.TargetingRule)
 	res, err := targetingRuleService.GetAllTargetingRule()
 	if err != nil {
@@ -28,6 +29,7 @@ func (controller *TargetingRuleController) getAllTargetingRule(ctx *gin.Context)
 }
 
 func (controller *TargetingRuleController) creatingTargetingRule(ctx *gin.Context) {
+	controller.TargetingRule = &TargetingRule{}
 	ctx.BindJSON(controller.TargetingRule)
 	targetingRuleService := NewTargetingRuleService(controller.Db, controller.TargetingRule)
 	res, err := targetingRuleService.CreateTargetingRule()

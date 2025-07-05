@@ -13,13 +13,14 @@ type CampaignController struct {
 }
 
 func CampaignServiceController(app *gin.Engine, db *gorm.DB) {
-	campaignController := &CampaignController{Db: db, Campaign: &Campaign{}}
+	campaignController := &CampaignController{Db: db}
 	router := app.Group("/campaign")
 	router.GET("", campaignController.getAllCampaign)
 	router.POST("", campaignController.createCampaign)
 }
 
 func (campaignController *CampaignController) getAllCampaign(ctx *gin.Context) {
+	campaignController.Campaign = &Campaign{}
 	campaignService := NewCampaignService(campaignController.Db, campaignController.Campaign)
 	res, err := campaignService.GetAllCampaign()
 	if err != nil {
@@ -30,6 +31,7 @@ func (campaignController *CampaignController) getAllCampaign(ctx *gin.Context) {
 }
 
 func (campaignController *CampaignController) createCampaign(ctx *gin.Context) {
+	campaignController.Campaign = &Campaign{}
 	ctx.BindJSON(campaignController.Campaign)
 	fmt.Println(*(campaignController.Campaign), campaignController.Campaign)
 	campaignService := NewCampaignService(campaignController.Db, campaignController.Campaign)

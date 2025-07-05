@@ -21,3 +21,8 @@ CREATE TABLE targeting_rules (
 
 
 -- // add foreign key to campaign also
+
+
+select * from campaigns inner join targeting_rules on 
+campaigns.cid = targeting_rules.cid 
+where targeting_rules.rules ->'include_country' @> '["US"]'::jsonb
