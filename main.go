@@ -7,6 +7,7 @@ import (
 	"github.com/sukvij/greedy-game/profiling"
 	redisservice "github.com/sukvij/greedy-game/redis-service"
 	servicediscovery "github.com/sukvij/greedy-game/service-discovery"
+	"github.com/sukvij/greedy-game/tracing"
 )
 
 type User struct {
@@ -24,9 +25,10 @@ func main() {
 	// fmt.Println(db, err)
 	redisClient := redisservice.NewRedisClient()
 	logs := logs.NewAgreeGateLogger()
+	tracker := tracing.InitTracer()
 	app := gin.Default()
 	profiling.Profiling(app)
-	servicediscovery.RouteService(app, db, redisClient, logs)
+	servicediscovery.RouteService(app, db, redisClient, logs, tracker)
 	app.Run(":8080")
 
 }

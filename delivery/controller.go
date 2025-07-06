@@ -9,6 +9,8 @@ import (
 	"github.com/sukvij/greedy-game/logs"
 	redisservice "github.com/sukvij/greedy-game/redis-service"
 	"github.com/sukvij/greedy-game/response"
+	"go.opentelemetry.io/otel"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"gorm.io/gorm"
 )
 
@@ -18,18 +20,20 @@ type DeliveryController struct {
 	RedisClient   *redis.Client
 	APICalledTime time.Time
 	Loager        *logs.AgreeGateLoager
+	Tracker       *sdktrace.TracerProvider
 }
 
-func DeliveryServiceController(app *gin.Engine, db *gorm.DB, redisClient *redis.Client, logs *logs.AgreeGateLoager) {
-	controller := &DeliveryController{Db: db, RedisClient: redisClient, Loager: logs}
+func DeliveryServiceController(app *gin.Engine, db *gorm.DB, redisClient *redis.Client, logs *logs.AgreeGateLoager, tracker *sdktrace.TracerProvider) {
+	controller := &DeliveryController{Db: db, RedisClient: redisClient, Loager: logs, Tracker: tracker}
 	router := app.Group("/delivery")
 	router.GET("", controller.getDelivery)
 }
 
 func (controller *DeliveryController) getDelivery(ctx *gin.Context) {
+	_, span := otel.Tracer("repository").Start(ctx, "NewRepository")
+	defer span.End()
 	controller.APICalledTime = time.Now()
 	controller.Request = &Request{}
-
 	bindErr := ctx.Bind(controller.Request)
 	if bindErr != nil {
 		controller.Loager.Error(bindErr)
