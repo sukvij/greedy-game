@@ -1,7 +1,7 @@
 package delivery
 
 import (
-	"fmt"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -21,16 +21,16 @@ type DeliveryServiceMethods interface {
 
 func (service *DeliveryService) GetDelivery() (*[]DeliveryResponse, error) {
 	if service.Db == nil {
-		return nil, fmt.Errorf("database failed")
+		return nil, errors.New("database failed")
 	}
 	if service.Request.AppId == "" {
-		return nil, fmt.Errorf("app_id are required")
+		return nil, errors.New("app_id are required")
 	}
 	if service.Request.Country == "" {
-		return nil, fmt.Errorf("country_id are required")
+		return nil, errors.New("country_id are required")
 	}
 	if service.Request.OperatingStstem == "" {
-		return nil, fmt.Errorf("os_id are required")
+		return nil, errors.New("os_id are required")
 	}
 	var deliveryRepository DeliveryRepositoryMethods = NewDeliveryRepository(service.Db, service.Request)
 	return deliveryRepository.GetDelivery()

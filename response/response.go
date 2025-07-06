@@ -47,6 +47,6 @@ func JSONResponse(ctx *gin.Context, err error, data interface{}, totalTime int64
 		ctx.JSON(response.StatusCode, response)
 		return
 	}
-	ReturnErrorWithCode(err, response)
+	ReturnErrorWithCode(ctx, err, response)
 	ctx.JSON(response.StatusCode, response)
 }

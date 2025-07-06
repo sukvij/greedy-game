@@ -76,8 +76,11 @@ func (repository *DeliveryRepository) GetDelivery() (*[]DeliveryResponse, error)
 		Where("(t.rules->'include_app' IS NOT NULL AND t.rules->'include_app' @> ?) OR (t.rules->'include_app' IS NULL AND NOT (t.rules->'exclude_app' @> ?))", appJSON, appJSON).
 		Select("c.cid, c.campaign_name, c.img, c.cta").
 		Scan(&results)
+	// fmt.Println("bhai ", response.Error, response.RowsAffected, response)
 	if response.Error == nil {
+
 		if response.RowsAffected == 0 || response == nil {
+			// fmt.Println("bhai ", response.Error, response.RowsAffected, response)
 			return nil, gorm.ErrRecordNotFound
 		} else {
 			return &results, nil
