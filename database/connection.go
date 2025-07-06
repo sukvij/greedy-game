@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/sukvij/greedy-game/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -12,8 +13,7 @@ func Connection() (*gorm.DB, error) {
 	var db *gorm.DB
 	var err error
 
-	// dsn := "root:root@tcp(localhost:3306)/rojgaarkaro?charset=utf8mb4&parseTime=True&loc=Local"
-	dsn := "host=localhost user=postgres password=pta nahi dbname=greedy-game port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	dsn := config.Configuration()
 
 	const maxRetries = 10
 	const retryDelay = 1 * time.Second
