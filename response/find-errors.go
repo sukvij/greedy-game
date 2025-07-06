@@ -16,11 +16,11 @@ func ReturnErrorWithCode(ctx *gin.Context, err error, response *FinalResponse) {
 	response.Error = &AppError{}
 	switch err.Error() {
 	case gorm.ErrRecordNotFound.Error():
-		ctx.Status(204)
+		response.StatusCode = 204
 		response.Error.Code = "204"
 		response.Error.Message = "record not found check variables that you pass"
 	case gorm.ErrDuplicatedKey.Error():
-		ctx.Status(409)
+		response.StatusCode = 409
 		response.Error.Code = "409"
 		response.Error.Message = "duplicate key --> primary key constraint"
 	case gorm.ErrForeignKeyViolated.Error():
@@ -31,19 +31,20 @@ func ReturnErrorWithCode(ctx *gin.Context, err error, response *FinalResponse) {
 		response.Error.Message = "database connection problem"
 	case "app_id are required":
 		fmt.Println("aa rha h kya")
-		ctx.Status(400)
+		response.StatusCode = 400
 		response.Error.Code = "400"
 		response.Error.Message = "app_id missing"
 	case "os_id are required":
-		ctx.Status(400)
+		response.StatusCode = 400
 		response.Error.Code = "400"
 		response.Error.Message = "os_id missing"
 	case "country_id are required":
-		ctx.Status(400)
+		response.StatusCode = 400
 		response.Error.Code = "400"
 		response.Error.Message = "countryid missing"
 	default:
 		response.Error.Code = "898989"
+		response.StatusCode = 500
 		response.Error.Message = "pta nahi kya problem hain. 😔"
 	}
 	response.Error.Details = string(err.Error())

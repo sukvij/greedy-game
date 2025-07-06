@@ -1,0 +1,29 @@
+
+response := repository.Db.Table("targeting_rules t").
+		Joins("INNER JOIN campaigns c ON t.cid = c.cid and c.status = 'ACTIVE'").
+		Where("(t.rules->'include_country' IS NOT NULL AND t.rules->'include_country' @> ?) OR (t.rules->'include_country' IS NULL AND NOT (t.rules->'exclude_country' @> ?))", countryJSON, countryJSON).
+		Where("(t.rules->'include_os' IS NOT NULL AND t.rules->'include_os' @> ?) OR (t.rules->'include_os' IS NULL AND NOT (t.rules->'exclude_os' @> ?))", osJSON, osJSON).
+		Where("(t.rules->'include_app' IS NOT NULL AND t.rules->'include_app' @> ?) OR (t.rules->'include_app' IS NULL AND NOT (t.rules->'exclude_app' @> ?))", appJSON, appJSON).
+		Select("c.cid, c.campaign_name, c.img, c.cta").
+		Scan(&results)
+
+
+here query using jsonb operations like -->  (->, @>) and joins
+    so use proepr indexing here --> CREATE INDEX idx_targeting_rules_rules ON targeting_rules USING GIN (rules);
+    GIN are optimized for JSONB query
+
+indexing on both t.cid and c.cid
+
+already using pooling of connections
+
+read replicas
+
+batch processing --> multiple request in single query --> reduce round trip time.
+
+shard by region, replicas, cache, multiple server, kafka --> no event loss --> 
+
+cache hit --> by 80-90% by pre storing frequent or common query
+
+denormalize --> targeting_rules and campaigns to avoid joins.
+
+scaling --> 
