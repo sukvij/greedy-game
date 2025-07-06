@@ -16,6 +16,11 @@ CREATE TABLE targeting_rules (
 
 
 -- // add foreign key to campaign also
+ALTER TABLE targeting_rules
+ADD CONSTRAINT fk_campaign
+FOREIGN KEY (cid)
+REFERENCES campaigns (cid)
+ON DELETE CASCADE;
 
 
 select * from campaigns inner join targeting_rules on 

@@ -69,14 +69,19 @@ func (repository *DeliveryRepository) GetDelivery() (*[]DeliveryResponse, error)
 	// err := repository.Db.Raw(query, &results).Error
 
 	var results []DeliveryResponse
-	err := repository.Db.Table("targeting_rules t").
+	response := repository.Db.Table("targeting_rules t").
 		Joins("INNER JOIN campaigns c ON t.cid = c.cid and c.status = 'ACTIVE'").
 		Where("(t.rules->'include_country' IS NOT NULL AND t.rules->'include_country' @> ?) OR (t.rules->'include_country' IS NULL AND NOT (t.rules->'exclude_country' @> ?))", countryJSON, countryJSON).
 		Where("(t.rules->'include_os' IS NOT NULL AND t.rules->'include_os' @> ?) OR (t.rules->'include_os' IS NULL AND NOT (t.rules->'exclude_os' @> ?))", osJSON, osJSON).
 		Where("(t.rules->'include_app' IS NOT NULL AND t.rules->'include_app' @> ?) OR (t.rules->'include_app' IS NULL AND NOT (t.rules->'exclude_app' @> ?))", appJSON, appJSON).
 		Select("c.cid, c.campaign_name, c.img, c.cta").
-		Scan(&results).Error
-	fmt.Println("err", err)
-	fmt.Println(results)
-	return &results, nil
+		Scan(&results)
+	if response.Error == nil {
+		if response.RowsAffected == 0 || response == nil {
+			return nil, gorm.ErrRecordNotFound
+		} else {
+			return &results, nil
+		}
+	}
+	return nil, response.Error
 }

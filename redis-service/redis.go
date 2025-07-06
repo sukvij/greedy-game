@@ -27,7 +27,7 @@ func SetValue(redisClient *redis.Client, key string, value interface{}) error {
 	if err != nil {
 		return fmt.Errorf("failed to marshal value: %v", err)
 	}
-	err = redisClient.Set(key, jsonValue, 1*time.Hour).Err()
+	err = redisClient.Set(key, jsonValue, 10*time.Second).Err()
 	if err != nil {
 		return fmt.Errorf("set key problem for val %v and err is %v", value, err)
 	}
