@@ -7,15 +7,18 @@ import (
 )
 
 type DeliveryRepository struct {
-	Db      *gorm.DB
-	Request *Request
+	Db *gorm.DB
 }
 
-func NewDeliveryRepository(db *gorm.DB, request *Request) *DeliveryRepository {
-	return &DeliveryRepository{Db: db, Request: request}
+type DeliveryRepositoryMethods interface {
+	GetDelivery(request *Request) (*[]DeliveryResponse, error)
 }
 
-func (repository *DeliveryRepository) GetDelivery(conditions []string) (interface{}, error) {
+func NewDeliveryRepository(db *gorm.DB) *DeliveryRepository {
+	return &DeliveryRepository{Db: db}
+}
+
+func (repository *DeliveryRepository) GetDelivery(request *Request) (*[]DeliveryResponse, error) {
 
 	// dsn := "inner join targeting_rules on campaigns.cid = targeting_rules.cid"
 
@@ -25,10 +28,10 @@ func (repository *DeliveryRepository) GetDelivery(conditions []string) (interfac
 	// }
 	// err := ans.Select("*").Scan(&results).Error
 
-	countryJSON := fmt.Sprintf(`["%s"]`, repository.Request.Country)
+	countryJSON := fmt.Sprintf(`["%s"]`, request.Country)
 
-	osJSON := fmt.Sprintf(`["%s"]`, repository.Request.OperatingStstem)
-	appJSON := fmt.Sprintf(`["%s"]`, repository.Request.AppId)
+	osJSON := fmt.Sprintf(`["%s"]`, request.OperatingStstem)
+	appJSON := fmt.Sprintf(`["%s"]`, request.AppId)
 	// err := repository.Db.Table("targeting_rules t").
 	// 	Joins("INNER JOIN campaigns c ON t.cid = c.cid").
 	// 	Where("(t.rules->'include_country' @> '[]'::jsonb OR t.rules->'include_country' @> ?)", countryJSON).
@@ -66,7 +69,7 @@ func (repository *DeliveryRepository) GetDelivery(conditions []string) (interfac
 
 	var results []DeliveryResponse
 	err := repository.Db.Table("targeting_rules t").
-		Joins("INNER JOIN campaigns c ON t.cid = c.cid").
+		Joins("INNER JOIN campaigns c ON t.cid = c.cid and c.status = 'ACTIVE'").
 		Where("(t.rules->'include_country' IS NOT NULL AND t.rules->'include_country' @> ?) OR (t.rules->'include_country' IS NULL AND NOT (t.rules->'exclude_country' @> ?))", countryJSON, countryJSON).
 		Where("(t.rules->'include_os' IS NOT NULL AND t.rules->'include_os' @> ?) OR (t.rules->'include_os' IS NULL AND NOT (t.rules->'exclude_os' @> ?))", osJSON, osJSON).
 		Where("(t.rules->'include_app' IS NOT NULL AND t.rules->'include_app' @> ?) OR (t.rules->'include_app' IS NULL AND NOT (t.rules->'exclude_app' @> ?))", appJSON, appJSON).

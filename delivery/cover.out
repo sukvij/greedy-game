@@ -1,0 +1,17 @@
+mode: set
+github.com/sukvij/greedy-game/delivery/controller.go:18.89,22.2 3 0
+github.com/sukvij/greedy-game/delivery/controller.go:24.69,31.23 5 0
+github.com/sukvij/greedy-game/delivery/controller.go:31.23,34.3 2 0
+github.com/sukvij/greedy-game/delivery/controller.go:35.2,39.20 5 0
+github.com/sukvij/greedy-game/delivery/repository.go:17.61,19.2 1 1
+github.com/sukvij/greedy-game/delivery/repository.go:21.98,81.2 8 1
+github.com/sukvij/greedy-game/delivery/service.go:14.73,16.2 1 1
+github.com/sukvij/greedy-game/delivery/service.go:22.76,23.23 1 1
+github.com/sukvij/greedy-game/delivery/service.go:23.23,25.3 1 1
+github.com/sukvij/greedy-game/delivery/service.go:26.2,26.33 1 1
+github.com/sukvij/greedy-game/delivery/service.go:26.33,28.3 1 1
+github.com/sukvij/greedy-game/delivery/service.go:29.2,29.35 1 1
+github.com/sukvij/greedy-game/delivery/service.go:29.35,31.3 1 1
+github.com/sukvij/greedy-game/delivery/service.go:32.2,32.43 1 1
+github.com/sukvij/greedy-game/delivery/service.go:32.43,34.3 1 1
+github.com/sukvij/greedy-game/delivery/service.go:35.2,36.56 2 1
