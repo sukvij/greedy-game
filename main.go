@@ -1,14 +1,12 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/sukvij/greedy-game/database"
+	"github.com/sukvij/greedy-game/logs"
 	"github.com/sukvij/greedy-game/profiling"
 	redisservice "github.com/sukvij/greedy-game/redis-service"
 	servicediscovery "github.com/sukvij/greedy-game/service-discovery"
-	targetingrule "github.com/sukvij/greedy-game/targeting-rule"
 )
 
 type User struct {
@@ -22,12 +20,13 @@ func main() {
 		return
 	}
 
-	db.AutoMigrate(&targetingrule.TargetingRule{})
-	fmt.Println(db, err)
+	// db.AutoMigrate(&targetingrule.TargetingRule{})
+	// fmt.Println(db, err)
 	redisClient := redisservice.NewRedisClient()
+	logs := logs.NewAgreeGateLogger()
 	app := gin.Default()
 	profiling.Profiling(app)
-	servicediscovery.RouteService(app, db, redisClient)
+	servicediscovery.RouteService(app, db, redisClient, logs)
 	app.Run(":8080")
 
 }

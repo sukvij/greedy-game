@@ -1,0 +1,2 @@
+ERROR: 2025/07/06 21:46:34 log.go:76: [C:\Users\vijju\OneDrive\Desktop\go project\greedy-game\delivery\controller.go:51 getDelivery] os_id are required
+ERROR: 2025/07/06 21:47:07 log.go:76: [C:\Users\vijju\OneDrive\Desktop\go project\greedy-game\delivery\controller.go:51 getDelivery] record not found

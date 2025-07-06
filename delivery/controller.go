@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
+	"github.com/sukvij/greedy-game/logs"
 	redisservice "github.com/sukvij/greedy-game/redis-service"
 	"github.com/sukvij/greedy-game/response"
 	"gorm.io/gorm"
@@ -16,10 +17,11 @@ type DeliveryController struct {
 	Request       *Request
 	RedisClient   *redis.Client
 	APICalledTime time.Time
+	Loager        *logs.AgreeGateLoager
 }
 
-func DeliveryServiceController(app *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
-	controller := &DeliveryController{Db: db, RedisClient: redisClient}
+func DeliveryServiceController(app *gin.Engine, db *gorm.DB, redisClient *redis.Client, logs *logs.AgreeGateLoager) {
+	controller := &DeliveryController{Db: db, RedisClient: redisClient, Loager: logs}
 	router := app.Group("/delivery")
 	router.GET("", controller.getDelivery)
 }
@@ -30,6 +32,7 @@ func (controller *DeliveryController) getDelivery(ctx *gin.Context) {
 
 	bindErr := ctx.Bind(controller.Request)
 	if bindErr != nil {
+		controller.Loager.Error(bindErr)
 		response.JSONResponse(ctx, bindErr, nil, time.Since(controller.APICalledTime).Milliseconds())
 		return
 	}
@@ -45,6 +48,7 @@ func (controller *DeliveryController) getDelivery(ctx *gin.Context) {
 	deliveryService := NewDeliveryService(controller.Db, controller.Request)
 	res, err := deliveryService.GetDelivery()
 	if err != nil {
+		controller.Loager.Error(err)
 		response.JSONResponse(ctx, err, nil, time.Since(controller.APICalledTime).Milliseconds())
 		return
 	}
