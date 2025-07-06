@@ -13,7 +13,7 @@ func Connection() (*gorm.DB, error) {
 	var err error
 
 	// dsn := "root:root@tcp(localhost:3306)/rojgaarkaro?charset=utf8mb4&parseTime=True&loc=Local"
-	dsn := "host=localhost user=postgres password=_ dbname=greedy-game port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	dsn := "host=localhost user=postgres password=pta nahi dbname=greedy-game port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 
 	const maxRetries = 10
 	const retryDelay = 1 * time.Second
