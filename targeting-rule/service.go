@@ -20,3 +20,8 @@ func (service *TargetingRuleService) CreateTargetingRule() (*TargetingRule, erro
 	targetingRuleRepo := NewTargetingRuleRepository(service.Db, service.Targetingrule)
 	return targetingRuleRepo.CreateTargetingRule()
 }
+
+func (service *TargetingRuleService) UpdateTargetingRule() (*TargetingRule, error) {
+	targetingRuleRepo := NewTargetingRuleRepository(service.Db, service.Targetingrule)
+	return targetingRuleRepo.UpdateTargetingRule()
+}

@@ -1,6 +1,10 @@
 package targetingrule
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+
+	"gorm.io/gorm"
+)
 
 type TargetingRuleRepository struct {
 	Db            *gorm.DB
@@ -27,4 +31,24 @@ func (repository *TargetingRuleRepository) CreateTargetingRule() (*TargetingRule
 	}
 	// fetch creaetd campaign from database to check
 	return repository.TargetingRule, nil
+}
+
+func (repository *TargetingRuleRepository) UpdateTargetingRule() (*TargetingRule, error) {
+
+	var existing TargetingRule
+	result := repository.Db.Where("cid = ?", repository.TargetingRule.CampaignId).First(&existing)
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			// Create if not found record bro
+			return repository.CreateTargetingRule()
+		}
+		return nil, fmt.Errorf("failed to check existing rule: %v", result.Error)
+	}
+
+	// Update existing rule
+	result = repository.Db.Model(&existing).Updates(repository.TargetingRule)
+	if result.Error != nil {
+		return nil, fmt.Errorf("failed to update targeting rule: %v", result.Error)
+	}
+	return nil, nil
 }
