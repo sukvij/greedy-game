@@ -1,0 +1,4 @@
+mode: set
+github.com/sukvij/greedy-game/main.go:18.13,20.16 2 0
+github.com/sukvij/greedy-game/main.go:20.16,22.3 1 0
+github.com/sukvij/greedy-game/main.go:24.2,29.18 6 0

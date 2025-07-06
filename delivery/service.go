@@ -32,8 +32,8 @@ func (service *DeliveryService) GetDelivery() (*[]DeliveryResponse, error) {
 	if service.Request.OperatingStstem == "" {
 		return nil, fmt.Errorf("os_id are required")
 	}
-	var deliveryRepository DeliveryRepositoryMethods = NewDeliveryRepository(service.Db)
-	return deliveryRepository.GetDelivery(service.Request)
+	var deliveryRepository DeliveryRepositoryMethods = NewDeliveryRepository(service.Db, service.Request)
+	return deliveryRepository.GetDelivery()
 }
 
 // func CreateDifferentCondition(request *Request) []string {

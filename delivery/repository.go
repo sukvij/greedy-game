@@ -7,18 +7,19 @@ import (
 )
 
 type DeliveryRepository struct {
-	Db *gorm.DB
+	Db      *gorm.DB
+	Request *Request
 }
 
 type DeliveryRepositoryMethods interface {
-	GetDelivery(request *Request) (*[]DeliveryResponse, error)
+	GetDelivery() (*[]DeliveryResponse, error)
 }
 
-func NewDeliveryRepository(db *gorm.DB) *DeliveryRepository {
-	return &DeliveryRepository{Db: db}
+func NewDeliveryRepository(db *gorm.DB, request *Request) *DeliveryRepository {
+	return &DeliveryRepository{Db: db, Request: request}
 }
 
-func (repository *DeliveryRepository) GetDelivery(request *Request) (*[]DeliveryResponse, error) {
+func (repository *DeliveryRepository) GetDelivery() (*[]DeliveryResponse, error) {
 
 	// dsn := "inner join targeting_rules on campaigns.cid = targeting_rules.cid"
 
@@ -28,10 +29,10 @@ func (repository *DeliveryRepository) GetDelivery(request *Request) (*[]Delivery
 	// }
 	// err := ans.Select("*").Scan(&results).Error
 
-	countryJSON := fmt.Sprintf(`["%s"]`, request.Country)
+	countryJSON := fmt.Sprintf(`["%s"]`, repository.Request.Country)
 
-	osJSON := fmt.Sprintf(`["%s"]`, request.OperatingStstem)
-	appJSON := fmt.Sprintf(`["%s"]`, request.AppId)
+	osJSON := fmt.Sprintf(`["%s"]`, repository.Request.OperatingStstem)
+	appJSON := fmt.Sprintf(`["%s"]`, repository.Request.AppId)
 	// err := repository.Db.Table("targeting_rules t").
 	// 	Joins("INNER JOIN campaigns c ON t.cid = c.cid").
 	// 	Where("(t.rules->'include_country' @> '[]'::jsonb OR t.rules->'include_country' @> ?)", countryJSON).
