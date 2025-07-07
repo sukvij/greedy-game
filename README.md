@@ -22,10 +22,14 @@ fmt.Println("The query is ", queryString)
 # instruction to run this app
   start redis
   go run main.go
+  run .sql file comamnd
+  docker run -d -p 6831:6831/udp -p 16686:16686 jaegertracing/all-in-one:latest
+  run      http://localhost:16686/   --> jaeger
 
-
+# create campaign
   http://localhost:8080/v1/campaign
-  # create campaign
+
+  
               // {
             //     "cid":"spotify",
             //     "campaign_name":"Spotify - Music for everyone",
@@ -50,9 +54,9 @@ fmt.Println("The query is ", queryString)
                 "status":"ACTIVE"
             }
 
-
+# create targeting rules
   http://localhost:8080/v1/targeting-rule
-  # create targeting rules
+ 
             {
           "cid":"duolingo",
           "rules": {
@@ -67,8 +71,9 @@ fmt.Println("The query is ", queryString)
 
 
 
-  http://localhost:8080/v1/delivery?app=com.duolingo.ludokinggame&country=US&os=Android
+  
   # get all deliveries
+  http://localhost:8080/v1/delivery?app=com.duolingo.ludokinggame&country=US&os=Android
   response will be like this
 
   {

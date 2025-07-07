@@ -1,6 +1,8 @@
 package tracing
 
 import (
+	"context"
+	"fmt"
 	"log"
 
 	"go.opentelemetry.io/otel"
@@ -12,24 +14,28 @@ import (
 )
 
 func InitTracer() *sdktrace.TracerProvider {
-	// Use Jaeger exporter (or stdout for debugging)
-	exporter, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint("http://localhost:14268/api/traces")))
+	fmt.Println("Initializing Jaeger exporter...")
+	exporter, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint("http://127.0.0.1:14268/api/traces")))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to create Jaeger exporter: %v", err)
 	}
-	// For debugging, use stdout exporter instead:
-	// exporter, err := stdouttrace.New(stdouttrace.WithPrettyPrint())
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	fmt.Println("Jaeger exporter initialized successfully")
+
+	resource, err := resource.New(context.Background(),
+		resource.WithAttributes(
+			semconv.ServiceNameKey.String("user-service"),
+		),
+	)
+	if err != nil {
+		log.Fatalf("failed to create resource: %v", err)
+	}
 
 	tp := sdktrace.NewTracerProvider(
 		sdktrace.WithBatcher(exporter),
-		sdktrace.WithResource(resource.NewWithAttributes(
-			semconv.SchemaURL,
-			semconv.ServiceNameKey.String("user-service"),
-		)),
+		sdktrace.WithResource(resource),
+		sdktrace.WithSampler(sdktrace.AlwaysSample()),
 	)
+
 	otel.SetTracerProvider(tp)
 	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
 	return tp

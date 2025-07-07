@@ -1,8 +1,10 @@
 package delivery
 
 import (
+	"context"
 	"errors"
 
+	"go.opentelemetry.io/otel"
 	"gorm.io/gorm"
 )
 
@@ -16,10 +18,10 @@ func NewDeliveryService(db *gorm.DB, request *Request) *DeliveryService {
 }
 
 type DeliveryServiceMethods interface {
-	GetDelivery() (*[]DeliveryResponse, error)
+	GetDelivery(ctx context.Context) (*[]DeliveryResponse, error)
 }
 
-func (service *DeliveryService) GetDelivery() (*[]DeliveryResponse, error) {
+func (service *DeliveryService) GetDelivery(ctx context.Context) (*[]DeliveryResponse, error) {
 	if service.Db == nil {
 		return nil, errors.New("database failed")
 	}
@@ -32,8 +34,11 @@ func (service *DeliveryService) GetDelivery() (*[]DeliveryResponse, error) {
 	if service.Request.OperatingStstem == "" {
 		return nil, errors.New("os_id are required")
 	}
+
+	context, span := otel.Tracer("service").Start(ctx, "getDelivery Service")
+	defer span.End()
 	var deliveryRepository DeliveryRepositoryMethods = NewDeliveryRepository(service.Db, service.Request)
-	return deliveryRepository.GetDelivery()
+	return deliveryRepository.GetDelivery(context)
 }
 
 // func CreateDifferentCondition(request *Request) []string {

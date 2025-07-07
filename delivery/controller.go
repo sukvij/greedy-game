@@ -1,6 +1,7 @@
 package delivery
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -30,8 +31,10 @@ func DeliveryServiceController(app *gin.RouterGroup, db *gorm.DB, redisClient *r
 }
 
 func (controller *DeliveryController) getDelivery(ctx *gin.Context) {
-	_, span := otel.Tracer("repository").Start(ctx, "NewRepository")
+	tracker := otel.Tracer("function controller")
+	childContext, span := tracker.Start(context.Background(), "getDelivery controller")
 	defer span.End()
+
 	controller.APICalledTime = time.Now()
 	controller.Request = &Request{}
 	bindErr := ctx.Bind(controller.Request)
@@ -43,6 +46,9 @@ func (controller *DeliveryController) getDelivery(ctx *gin.Context) {
 
 	key := controller.Request.AppId + "-" + controller.Request.Country + "-" + controller.Request.OperatingStstem
 	// fetch result from redis if exist
+
+	// redisContext, redisSpan := otel.Tracer("redis controller").Start(childContext, "getDelivery redis DeliveryController")
+	// defer redisSpan.End()
 	redisResult, err1 := redisservice.GetValue(controller.RedisClient, key)
 	if err1 == redis.Nil && redisResult != nil {
 		response.JSONResponse(ctx, nil, redisResult, time.Since(controller.APICalledTime).Milliseconds())
@@ -50,7 +56,7 @@ func (controller *DeliveryController) getDelivery(ctx *gin.Context) {
 	}
 	fmt.Println("bhai database me jaa rha h abhi to..")
 	deliveryService := NewDeliveryService(controller.Db, controller.Request)
-	res, err := deliveryService.GetDelivery()
+	res, err := deliveryService.GetDelivery(childContext)
 	if err != nil {
 		controller.Loager.Error(err)
 		response.JSONResponse(ctx, err, nil, time.Since(controller.APICalledTime).Milliseconds())

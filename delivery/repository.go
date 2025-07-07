@@ -1,8 +1,10 @@
 package delivery
 
 import (
+	"context"
 	"fmt"
 
+	"go.opentelemetry.io/otel"
 	"gorm.io/gorm"
 )
 
@@ -12,14 +14,14 @@ type DeliveryRepository struct {
 }
 
 type DeliveryRepositoryMethods interface {
-	GetDelivery() (*[]DeliveryResponse, error)
+	GetDelivery(ctx context.Context) (*[]DeliveryResponse, error)
 }
 
 func NewDeliveryRepository(db *gorm.DB, request *Request) *DeliveryRepository {
 	return &DeliveryRepository{Db: db, Request: request}
 }
 
-func (repository *DeliveryRepository) GetDelivery() (*[]DeliveryResponse, error) {
+func (repository *DeliveryRepository) GetDelivery(ctx context.Context) (*[]DeliveryResponse, error) {
 
 	// dsn := "inner join targeting_rules on campaigns.cid = targeting_rules.cid"
 
@@ -28,6 +30,8 @@ func (repository *DeliveryRepository) GetDelivery() (*[]DeliveryResponse, error)
 	// 	ans = ans.Where(conditions[i])
 	// }
 	// err := ans.Select("*").Scan(&results).Error
+	_, span := otel.Tracer("repository").Start(ctx, "getDelivery Repository")
+	defer span.End()
 
 	countryJSON := fmt.Sprintf(`["%s"]`, repository.Request.Country)
 
