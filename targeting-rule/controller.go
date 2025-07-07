@@ -10,7 +10,7 @@ type TargetingRuleController struct {
 	TargetingRule *TargetingRule
 }
 
-func TargetingRuleServiceController(app *gin.Engine, db *gorm.DB) {
+func TargetingRuleServiceController(app *gin.RouterGroup, db *gorm.DB) {
 	targetingRuleController := &TargetingRuleController{Db: db}
 	router := app.Group("/targeting-rule")
 	router.GET("", targetingRuleController.getAllTargetingRule)

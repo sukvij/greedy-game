@@ -11,7 +11,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func RouteService(app *gin.Engine, db *gorm.DB, redisClient *redis.Client, logs *logs.AgreeGateLoager, tracker *sdktrace.TracerProvider) {
+func RouteService(engine *gin.Engine, db *gorm.DB, redisClient *redis.Client, logs *logs.AgreeGateLoager, tracker *sdktrace.TracerProvider) {
+	app := engine.Group("/v1")
 	campaign.CampaignServiceController(app, db)
 	targetingrule.TargetingRuleServiceController(app, db)
 	delivery.DeliveryServiceController(app, db, redisClient, logs, tracker)

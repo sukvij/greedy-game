@@ -12,7 +12,7 @@ type CampaignController struct {
 	Campaign *Campaign
 }
 
-func CampaignServiceController(app *gin.Engine, db *gorm.DB) {
+func CampaignServiceController(app *gin.RouterGroup, db *gorm.DB) {
 	campaignController := &CampaignController{Db: db}
 	router := app.Group("/campaign")
 	router.GET("", campaignController.getAllCampaign)

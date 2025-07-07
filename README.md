@@ -24,7 +24,7 @@ fmt.Println("The query is ", queryString)
   go run main.go
 
 
-  http://localhost:8080/campaign
+  http://localhost:8080/v1/campaign
   # create campaign
               // {
             //     "cid":"spotify",
@@ -51,7 +51,7 @@ fmt.Println("The query is ", queryString)
             }
 
 
-  http://localhost:8080/targeting-rule
+  http://localhost:8080/v1/targeting-rule
   # create targeting rules
             {
           "cid":"duolingo",
@@ -67,7 +67,7 @@ fmt.Println("The query is ", queryString)
 
 
 
-  http://localhost:8080/delivery?app=com.duolingo.ludokinggame&country=US&os=Android
+  http://localhost:8080/v1/delivery?app=com.duolingo.ludokinggame&country=US&os=Android
   # get all deliveries
   response will be like this
 

@@ -23,7 +23,7 @@ type DeliveryController struct {
 	Tracker       *sdktrace.TracerProvider
 }
 
-func DeliveryServiceController(app *gin.Engine, db *gorm.DB, redisClient *redis.Client, logs *logs.AgreeGateLoager, tracker *sdktrace.TracerProvider) {
+func DeliveryServiceController(app *gin.RouterGroup, db *gorm.DB, redisClient *redis.Client, logs *logs.AgreeGateLoager, tracker *sdktrace.TracerProvider) {
 	controller := &DeliveryController{Db: db, RedisClient: redisClient, Loager: logs, Tracker: tracker}
 	router := app.Group("/delivery")
 	router.GET("", controller.getDelivery)

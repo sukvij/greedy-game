@@ -12,3 +12,4 @@ ERROR: 2025/07/07 09:44:27 log.go:76: [C:\Users\vijju\OneDrive\Desktop\go projec
 ERROR: 2025/07/07 09:57:13 log.go:76: [C:\Users\vijju\OneDrive\Desktop\go project\greedy-game\delivery\controller.go:55 getDelivery] app_id are required
 ERROR: 2025/07/07 09:58:50 log.go:76: [C:\Users\vijju\OneDrive\Desktop\go project\greedy-game\delivery\controller.go:55 getDelivery] app_id are required
 ERROR: 2025/07/07 12:40:45 log.go:76: [C:\Users\vijju\OneDrive\Desktop\go project\greedy-game\delivery\controller.go:55 getDelivery] record not found
+ERROR: 2025/07/07 12:55:30 log.go:76: [C:\Users\vijju\OneDrive\Desktop\go project\greedy-game\delivery\controller.go:55 getDelivery] record not found
