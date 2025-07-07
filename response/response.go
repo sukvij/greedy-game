@@ -1,6 +1,8 @@
 package response
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -36,11 +38,11 @@ type FinalResponse struct {
 	StatusCode int       `json:"statusCode"`
 	Data       any       `json:"data,omitempty"`
 	Error      *AppError `json:"error,omitempty"`
-	Meta       Meta      `json:"meta"`
+	Meta       *Meta     `json:"meta"`
 }
 
 func JSONResponse(ctx *gin.Context, err error, data interface{}, totalTime int64) {
-	response := &FinalResponse{Data: data, Meta: Meta{LatencyMs: totalTime}}
+	response := &FinalResponse{Data: data, Meta: &Meta{LatencyMs: totalTime}}
 	if err == nil {
 		response.Success = true
 		response.StatusCode = 200
@@ -48,5 +50,9 @@ func JSONResponse(ctx *gin.Context, err error, data interface{}, totalTime int64
 		return
 	}
 	ReturnErrorWithCode(ctx, err, response)
+	if response.StatusCode == 204 {
+		ctx.JSON(http.StatusInternalServerError, response)
+		return
+	}
 	ctx.JSON(response.StatusCode, response)
 }
