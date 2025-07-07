@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/sukvij/greedy-game/config"
+	"github.com/sukvij/greedy-game/gredfers/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

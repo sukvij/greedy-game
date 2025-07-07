@@ -5,7 +5,7 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/sukvij/greedy-game/campaign"
 	"github.com/sukvij/greedy-game/delivery"
-	"github.com/sukvij/greedy-game/logs"
+	"github.com/sukvij/greedy-game/gredfers/logs"
 	targetingrule "github.com/sukvij/greedy-game/targeting-rule"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"gorm.io/gorm"

@@ -2,12 +2,12 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sukvij/greedy-game/database"
-	"github.com/sukvij/greedy-game/logs"
-	"github.com/sukvij/greedy-game/profiling"
-	redisservice "github.com/sukvij/greedy-game/redis-service"
+	"github.com/sukvij/greedy-game/gredfers/database"
+	"github.com/sukvij/greedy-game/gredfers/logs"
+	"github.com/sukvij/greedy-game/gredfers/profiling"
+	redisservice "github.com/sukvij/greedy-game/gredfers/redis-service"
+	"github.com/sukvij/greedy-game/gredfers/tracing"
 	servicediscovery "github.com/sukvij/greedy-game/service-discovery"
-	"github.com/sukvij/greedy-game/tracing"
 )
 
 type User struct {

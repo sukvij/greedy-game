@@ -5,7 +5,7 @@ import (
 )
 
 func Configuration() string {
-	viper.SetConfigFile("config/config.env")
+	viper.SetConfigFile("gredfers/config/config.env")
 	viper.ReadInConfig()
 	user := viper.Get("user").(string)
 	host := viper.Get("host").(string)

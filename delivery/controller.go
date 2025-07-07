@@ -6,9 +6,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
-	"github.com/sukvij/greedy-game/logs"
-	redisservice "github.com/sukvij/greedy-game/redis-service"
-	"github.com/sukvij/greedy-game/response"
+	"github.com/sukvij/greedy-game/gredfers/logs"
+	redisservice "github.com/sukvij/greedy-game/gredfers/redis-service"
+	"github.com/sukvij/greedy-game/gredfers/response"
 	"go.opentelemetry.io/otel"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"gorm.io/gorm"

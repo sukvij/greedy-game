@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/sukvij/greedy-game/database"
+	"github.com/sukvij/greedy-game/gredfers/database"
 	"gorm.io/gorm"
 )
 
