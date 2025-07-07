@@ -1,6 +1,8 @@
 package campaign
 
 import (
+	"fmt"
+
 	"gorm.io/gorm"
 )
 
@@ -21,4 +23,9 @@ func (campaignService *CampaignService) GetAllCampaign() (*[]Campaign, error) {
 func (campaignService *CampaignService) CreateCampaign() (*Campaign, error) {
 	campaignRepository := NewCampaignRepository(campaignService.Db, campaignService.Campaign)
 	return campaignRepository.CreateCampaign()
+}
+func (campaignService *CampaignService) UpdateCampaign() (*Campaign, error) {
+	fmt.Println("service good bro")
+	campaignRepository := NewCampaignRepository(campaignService.Db, campaignService.Campaign)
+	return campaignRepository.UpdateCampaign()
 }
