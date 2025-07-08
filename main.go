@@ -30,5 +30,4 @@ func main() {
 	profiling.Profiling(app)
 	servicediscovery.RouteService(app, db, redisClient, logs, tracker)
 	app.Run(":8080")
-
 }

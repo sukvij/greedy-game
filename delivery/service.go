@@ -22,9 +22,6 @@ type DeliveryServiceMethods interface {
 }
 
 func (service *DeliveryService) GetDelivery(ctx context.Context) (*[]DeliveryResponse, error) {
-	if service.Db == nil {
-		return nil, errors.New("database failed")
-	}
 	if service.Request.AppId == "" {
 		return nil, errors.New("app_id are required")
 	}

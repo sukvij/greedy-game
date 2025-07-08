@@ -3,6 +3,7 @@ module github.com/sukvij/greedy-game
 go 1.23.1
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/gin-gonic/gin v1.10.1
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/spf13/viper v1.20.1

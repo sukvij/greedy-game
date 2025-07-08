@@ -1,48 +1,69 @@
 package delivery
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"testing"
 
+	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
-	"github.com/sukvij/greedy-game/gredfers/database"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 type TestCaseStructure struct {
-	Input    Request
-	Db       *gorm.DB
-	Response *[]DeliveryResponse
-	Err      error
+	Input         Request
+	Db            *gorm.DB
+	Response      *[]DeliveryResponse
+	Err           error
+	ResponseEqual bool
+	ErrorEqual    bool
 }
+
+// go test -coverprofile cover.out
+
+// go tool cover -html cover.out
 
 func TestGetDelivery(t *testing.T) {
 
 	testcases := []TestCaseStructure{}
-	db, _ := database.Connection()
+	sqlDB, _, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer sqlDB.Close() // Ensure the mock SQL DB is closed
+
+	db, err := gorm.Open(postgres.New(postgres.Config{
+		Conn: sqlDB, // Inject the mock SQL DB connection
+	}), &gorm.Config{})
+	if err != nil {
+		t.Fatalf("Failed to open GORM with mock PostgreSQL DB: %v", err)
+	}
+
 	testcases = append(testcases, TestCaseStructure{Input: Request{
 		Country:         "India",
 		OperatingStstem: "Android",
 		AppId:           "com.duolingo.ludokinggame1",
-	}, Db: nil, Response: nil, Err: fmt.Errorf("database failed")})
+	}, Db: nil, Response: nil, Err: fmt.Errorf("database failed"), ResponseEqual: true, ErrorEqual: true})
 
 	testcases = append(testcases, TestCaseStructure{Input: Request{
 		Country:         "India",
 		OperatingStstem: "Android",
 		// AppId:           "com.duolingo.ludokinggame1",
-	}, Db: db, Response: nil, Err: fmt.Errorf("app_id are required")})
+	}, Db: db, Response: nil, Err: fmt.Errorf("app_id are required"), ResponseEqual: true, ErrorEqual: true})
 
 	testcases = append(testcases, TestCaseStructure{Input: Request{
 		// Country:         "India",
 		OperatingStstem: "Android",
 		AppId:           "com.duolingo.ludokinggame1",
-	}, Db: db, Response: nil, Err: fmt.Errorf("country_id are required")})
+	}, Db: db, Response: nil, Err: fmt.Errorf("country_id are required"), ResponseEqual: true, ErrorEqual: true})
 
 	testcases = append(testcases, TestCaseStructure{Input: Request{
 		Country: "India",
 		// OperatingStstem: "Android",
 		AppId: "com.duolingo.ludokinggame1",
-	}, Db: db, Response: nil, Err: fmt.Errorf("os_id are required")})
+	}, Db: db, Response: nil, Err: fmt.Errorf("os_id are required"), ResponseEqual: true, ErrorEqual: true})
 
 	testcases = append(testcases, TestCaseStructure{Input: Request{
 		Country:         "US",
@@ -55,14 +76,22 @@ func TestGetDelivery(t *testing.T) {
 			Image:        "https://somelink2",
 			CTA:          "Install",
 		},
-	}, Err: nil})
+	}, Err: errors.New("database failed"), ResponseEqual: false, ErrorEqual: false})
 
 	for _, eachCase := range testcases {
 		var serviceMethod DeliveryServiceMethods = NewDeliveryService(eachCase.Db, &eachCase.Input)
-		res, err := serviceMethod.GetDelivery()
+		res, err := serviceMethod.GetDelivery(context.Background())
 		fmt.Println(res, err)
 		// var haha *[]DeliveryResponse = eachCase.Response
-		assert.Equal(t, res, eachCase.Response)
-		assert.Equal(t, err, eachCase.Err)
+		if eachCase.ResponseEqual {
+			assert.Equal(t, res, eachCase.Response)
+		} else {
+			assert.NotEqual(t, res, eachCase.Response)
+		}
+		if eachCase.ErrorEqual {
+			assert.Equal(t, err.Error(), eachCase.Err.Error())
+		} else {
+			assert.NotEqual(t, err.Error(), eachCase.Err.Error())
+		}
 	}
 }

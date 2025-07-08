@@ -29,6 +29,7 @@ func Connection() (*gorm.DB, error) {
 
 		// Get generic database object sql.DB to use its functions
 		sqlDB, err1 := db.DB()
+
 		if err1 != nil {
 			log.Printf("Failed to get underlying sql.DB: %v. Retrying in %v...", err1, retryDelay)
 			time.Sleep(retryDelay)

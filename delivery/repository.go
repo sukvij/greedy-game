@@ -2,6 +2,7 @@ package delivery
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"go.opentelemetry.io/otel"
@@ -22,6 +23,9 @@ func NewDeliveryRepository(db *gorm.DB, request *Request) *DeliveryRepository {
 }
 
 func (repository *DeliveryRepository) GetDelivery(ctx context.Context) (*[]DeliveryResponse, error) {
+	if repository.Db == nil {
+		return nil, errors.New("database failed")
+	}
 
 	// dsn := "inner join targeting_rules on campaigns.cid = targeting_rules.cid"
 
@@ -81,14 +85,14 @@ func (repository *DeliveryRepository) GetDelivery(ctx context.Context) (*[]Deliv
 		Select("c.cid, c.campaign_name, c.img, c.cta").
 		Scan(&results)
 	// fmt.Println("bhai ", response.Error, response.RowsAffected, response)
-	if response.Error == nil {
+	// if response.Error == nil {
 
-		if response.RowsAffected == 0 || response == nil {
-			// fmt.Println("bhai ", response.Error, response.RowsAffected, response)
-			return nil, gorm.ErrRecordNotFound
-		} else {
-			return &results, nil
-		}
-	}
-	return nil, response.Error
+	// 	if response.RowsAffected == 0 || response == nil {
+	// 		// fmt.Println("bhai ", response.Error, response.RowsAffected, response)
+	// 		return nil, gorm.ErrRecordNotFound
+	// 	} else {
+	// 		return &results, nil
+	// 	}
+	// }
+	return &results, response.Error
 }
